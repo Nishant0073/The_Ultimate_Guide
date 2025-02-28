@@ -10,3 +10,11 @@ public class CustomeMiddleware : IMiddleware
     }
     
 }
+
+public static class CustomeMiddlewareExtenstion{
+    public static IApplicationBuilder UseMyCustomerMiddleWare(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<CustomeMiddleware>();
+        return app;
+    }
+}

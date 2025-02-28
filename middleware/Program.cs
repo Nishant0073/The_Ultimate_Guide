@@ -14,7 +14,8 @@ app.Use( async (HttpContext context,RequestDelegate next) => {
 });
 
 //using middleware
-app.UseMiddleware<CustomeMiddleware>();
+//app.UseMiddleware<CustomeMiddleware>();
+app.UseMyCustomerMiddleWare();
 
 
 //middleware 3
