@@ -3,7 +3,7 @@ using middleware.MyMiddlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 //registering middleware
-builder.Services.AddTransient<IMiddleware,CustomeMiddleware>();
+builder.Services.AddTransient<CustomeMiddleware>();
 var app = builder.Build();
 
 
@@ -19,7 +19,7 @@ app.UseMiddleware<CustomeMiddleware>();
 
 //middleware 3
 app.Use(async (HttpContext context,RequestDelegate next) =>{
-    await context.Response.WriteAsync("Hello again");
+    await context.Response.WriteAsync("Hello again\n");
     await next(context);
 });
 
