@@ -1,44 +1,62 @@
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+
+app.Run(async (HttpContext context) =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
+		if (context.Request.Method == "GET")
+		{
+				double firstNumber = 0;
+				double secondNumber = 0;
+				try
+				{
+						if (context.Request.Query.ContainsKey(("firstNumber")))
+						{
+								firstNumber = double.Parse(context.Request.Query["firstNumber"][0]);
+						}
+						if (context.Request.Query.ContainsKey(("secondNumber")))
+						{
+								secondNumber = double.Parse(context.Request.Query["secondNumber"][0]);
+						}
+						if (context.Request.Query.ContainsKey(("operation")))
+						{
+								string op = (context.Request.Query["operation"][0]);
+								if (op == "add")
+								{
+										await context.Response.WriteAsync((firstNumber + secondNumber).ToString());
+								}
+								else if (op == "sub")
+								{
+										await context.Response.WriteAsync((firstNumber - secondNumber).ToString());
+								}
+								else if (op == "mul")
+								{
+										await context.Response.WriteAsync((firstNumber * secondNumber).ToString());
+								}
+								else if (op == "div")
+								{
+										await context.Response.WriteAsync((firstNumber / secondNumber).ToString());
+								}
+								else if (op == "mod")
+								{
+										await context.Response.WriteAsync((firstNumber % secondNumber).ToString());
+								}
+								else
+								{
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+										await context.Response.WriteAsync("Invalid Input!");
+								}
+						}
+				}
+				catch (Exception e)
+				{
+						await context.Response.WriteAsync("Invalid Input!");
+				}
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
+		}
+});
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
